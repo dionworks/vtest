@@ -1,9 +1,9 @@
 function Device(){
-    this.name = "Name of Device";
+    
+    this.name = "";
 
     //type of vehicles available
-    this.vehicleTypes = ['Binek-Hafif Ticari','Ağır Vasıta'];
-
+    this.vehicleTypes = [];
 
     //default props are given
     this.props = [
