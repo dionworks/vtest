@@ -2,7 +2,7 @@
 VektorDevices.VFleet.name = 'VDrive';
 
 // add a vhicle types
-VektorDevices.VFleet.vehicleTypes.push('Binek-Hafif Ticari', 'Servis Taşımacılığı', 'Rent a Car'););
+VektorDevices.VFleet.vehicleTypes.push('Binek-Hafif Ticari', 'Servis Taşımacılığı', 'Rent a Car');
 
 // add a montage property
 VektorDevices.VFleet.props.push('Tak-Çalıştır');
