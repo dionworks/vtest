@@ -1,6 +1,5 @@
 module.exports = function (grunt) {
 
-
 	grunt.initConfig({
 		uglify: {
 			options: {
@@ -8,7 +7,8 @@ module.exports = function (grunt) {
 			},
 			dist: {
 				files: {
-					'js/devices.min.js': [
+					'js/main.min.js': [
+						'js/plugins.js',
 						'js/vektor/device.js',
 						'js/vektor/devices/vektordevices.js',
 						'js/vektor/devices/vdrive.js',
@@ -18,6 +18,7 @@ module.exports = function (grunt) {
 						'js/vektor/devices/vmax.js',
 						'js/vektor/devices/vmini.js',
 						'js/vektor/devices/vmoto.js',
+						'js/script.js',
 					]
 				}
 			}
