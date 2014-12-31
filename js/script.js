@@ -21,6 +21,8 @@ function DeviceQuery()
         });
     };
 
+    this.results = null;
+
     this.findVehicleTypes = function()
     {
         var current = this;
@@ -33,6 +35,8 @@ function DeviceQuery()
 
         });
     };
+
+    this.results = null;
 
     this.findAdditionalProps = function()
     {
@@ -57,6 +61,9 @@ var query = new DeviceQuery();
 query.devices = VektorDevices;
 
 //add a property to query
-query.props.push('Tak-Çalıştır');
+//query.props.push('Tak-Çalıştır');
 
-query.find();
+query.vehicleTypes.push('Binek-Hafif Ticari');
+
+//query.find();
+query.findVehicleTypes();

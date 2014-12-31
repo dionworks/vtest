@@ -1,8 +1,8 @@
 // add a name
-VektorDevices.VFleet.name = 'VMoto';
+VektorDevices.VMoto.name = 'VMoto';
 
 // add a vhicle types
-VektorDevices.VFleet.vehicleTypes.push('Motosiklet');
+VektorDevices.VMoto.vehicleTypes.push('Motosiklet');
 
 // add a montage property
-VektorDevices.VFleet.props.push('Kablolu Montaj');
+VektorDevices.VMoto.props.push('Kablolu Montaj');
