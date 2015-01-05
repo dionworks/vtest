@@ -33,7 +33,7 @@ module.exports = function (grunt) {
 				tasks: ['uglify'],
 				options: { livereload: reloadPort }
 			}
-		}
+		});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
