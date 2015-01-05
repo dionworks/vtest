@@ -13,3 +13,4 @@ VektorDevices.VMax.additionalProps.push('Yakıt Tüketim Raporu', 'Sürüş Anal
 VektorDevices.VMax.additionalProps.push('Mesajlaşma', 'Navigasyon', 'Görev Atama');
 VektorDevices.VMax.additionalProps.push('Isı', 'Depo', 'Menhol', 'Vana/Sayaç', 'Kapı', 'Sürücü');
 VektorDevices.VMax.additionalProps.push('Carrier', 'ThermoKing');
+

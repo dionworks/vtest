@@ -22,8 +22,20 @@ module.exports = function (grunt) {
 					]
 				}
 			}
+		},
+		watch: {
+			options: {
+				nospawn: true,
+				livereload: reloadPort
+			},
+			uglify: {
+				files: ['js/**'],
+				tasks: ['uglify'],
+				options: { livereload: reloadPort }
+			}
 		}
 	});
-	grunt.loadNpmTasks('grunt-contrib-uglify');
 
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 }
