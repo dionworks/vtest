@@ -2,9 +2,11 @@
   "name": "vektor-telekom",
   "version": "0.1.0",
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-jshint": "~0.6.3",
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt-contrib-uglify": "~0.2.7"
+    "gulp-concat": "~2.4.3",
+    "gulp-plumber": "~0.6.6",
+    "gulp-minify": "0.0.5",
+    "gulp": "~3.8.10",
+    "gulp-watch": "~4.1.0",
+    "gulp-batch": "~1.0.5"
   }
 }

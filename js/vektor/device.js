@@ -4,7 +4,6 @@ function Device(){
 
     //type of vehicles available
     this.vehicleTypes = [];
-
     //default props are given
     this.props = [
         'Konum Takibi',

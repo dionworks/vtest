@@ -1,5 +1,3 @@
-console.log(VektorDevices.VFleetCan.props);
-
 //example query function
 function DeviceQuery()
 {
