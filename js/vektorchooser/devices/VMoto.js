@@ -17,7 +17,7 @@ var VektorChooser = VektorChooser || {};
 
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : []
+            additionalPackages : []
 
     });
 

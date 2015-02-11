@@ -39,8 +39,24 @@ var VektorChooser = VektorChooser || {};
                 'Taşınabilir'
 
             ],
-            //name of additionalPackages like ViV, VSense etc.
-            additionalProps : []
+            //properties of additionalPackages like ViV, VSense etc.
+            additionalProps : [
+                'Mesajlaşma',
+                'Navigasyon',
+                'Görev Atama',
+                'Isı',
+                'Depo',
+                'Menhol',
+                'Vana/Sayaç',
+                'Kapı',
+                'Sürücü',
+                'Carrier',
+                'ThermoKing',
+                'Uzaktan Veri İndirme',
+                'Günlük Sürüş Saati Takibi',
+                'Treyler ID'
+
+            ]
         },
 
 

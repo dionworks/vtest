@@ -20,7 +20,7 @@ var VektorChooser = VektorChooser || {};
                 'Gerçek KM Tüketim'
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : ['Yakıt Tüketim Raporu', 'Sürüş Analizi', 'Gerçek KM Takibi']
+            additionalPackages : []
 
     });
 

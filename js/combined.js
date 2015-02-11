@@ -45,6 +45,7 @@ function vSearch(filterModel)
 
 
     VektorChooser.deviceList = {};
+    VektorChooser.additionalPackageList = {};
 
     VektorChooser.currentView = {};
 
@@ -181,6 +182,49 @@ var VektorChooser = VektorChooser || {};
 (function() {
     'use strict';
 
+    // BaseDevice Model, other device models will be extended from this
+    // ----------
+
+
+    VektorChooser.AdditionalPackageModel = Backbone.Model.extend({
+
+        defaults: {
+            //name of device
+            name : '',
+            //type of vehicles available
+            vehicleTypes : [],
+            //default props are given
+            props : []
+        },
+
+
+        initialize: function() {
+
+            //this.setProps();
+
+
+        },
+
+        setProps : function(){
+            var props = VektorChooser.defaultProps;
+            this.set( 'props', props.concat(this.get('props')));
+        }
+
+
+
+
+
+
+
+    });
+
+}());
+var VektorChooser = VektorChooser || {};
+
+
+(function() {
+    'use strict';
+
     // Contains all the data to filter
     // ----------
 
@@ -216,8 +260,24 @@ var VektorChooser = VektorChooser || {};
                 'Taşınabilir'
 
             ],
-            //name of additionalPackages like ViV, VSense etc.
-            additionalProps : []
+            //properties of additionalPackages like ViV, VSense etc.
+            additionalProps : [
+                'Mesajlaşma',
+                'Navigasyon',
+                'Görev Atama',
+                'Isı',
+                'Depo',
+                'Menhol',
+                'Vana/Sayaç',
+                'Kapı',
+                'Sürücü',
+                'Carrier',
+                'ThermoKing',
+                'Uzaktan Veri İndirme',
+                'Günlük Sürüş Saati Takibi',
+                'Treyler ID'
+
+            ]
         },
 
 
@@ -475,7 +535,7 @@ var VektorChooser = VektorChooser || {};
                 'Gerçek KM Tüketim'
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : []
+            additionalPackages : []
 
     });
 
@@ -499,7 +559,9 @@ var VektorChooser = VektorChooser || {};
         //default props are given
         props : [
             'Tak-Çalıştır'
-        ]
+        ],
+
+        additionalPackages : []
 
     });
 
@@ -527,16 +589,8 @@ var VektorChooser = VektorChooser || {};
             'Kablolu Montaj'
         ],
         //name of additionalPackages like ViV, VSense etc.
-        additionalProps : [
-            'Mesajlaşma',
-            'Navigasyon',
-            'Görev Atama',
-            'Isı',
-            'Depo',
-            'Menhol',
-            'Vana/Sayaç',
-            'Kapı',
-            'Sürücü'
+        additionalPackages : [
+
         ]
 
     });
@@ -567,16 +621,8 @@ var VektorChooser = VektorChooser || {};
             'Gerçek KM Tüketim'
         ],
         //name of additionalPackages like ViV, VSense etc.
-        additionalProps : [
-            'Mesajlaşma',
-            'Navigasyon',
-            'Görev Atama',
-            'Isı',
-            'Depo',
-            'Menhol',
-            'Vana/Sayaç',
-            'Kapı',
-            'Sürücü'
+        additionalPackages : [
+
         ]
 
     });
@@ -604,7 +650,7 @@ var VektorChooser = VektorChooser || {};
                 'Gerçek KM Tüketim'
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : ['Yakıt Tüketim Raporu', 'Sürüş Analizi', 'Gerçek KM Takibi']
+            additionalPackages : []
 
     });
 
@@ -628,7 +674,7 @@ var VektorChooser = VektorChooser || {};
                 'Taşınabilir'
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : []
+            additionalPackages : []
 
     });
 
@@ -652,7 +698,163 @@ var VektorChooser = VektorChooser || {};
 
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : []
+            additionalPackages : []
+
+    });
+
+}());
+var VektorChooser = VektorChooser || {};
+
+
+(function() {
+    'use strict';
+
+    // BaseDevice Model, other device models will be extended from this
+    // ----------
+
+
+    VektorChooser.additionalPackageList.VFrigo = new VektorChooser.AdditionalPackageModel.extend({
+
+        defaults: {
+            //name of device
+            name : 'VFrigo',
+            //type of vehicles available
+            vehicleTypes : ['VMax'],
+            //default props are given
+            props : ['Carrier','ThermoKing']
+        }
+
+
+
+
+
+
+
+
+    });
+
+}());
+var VektorChooser = VektorChooser || {};
+
+
+(function() {
+    'use strict';
+
+    // BaseDevice Model, other device models will be extended from this
+    // ----------
+
+
+    VektorChooser.additionalPackageList.VSense = new VektorChooser.AdditionalPackageModel.extend({
+
+        defaults: {
+            //name of device
+            name : 'VSense',
+            //type of vehicles available
+            vehicleTypes : ['VFleet','VFleet CAN','VMax'],
+            //default props are given
+            props : ['Isı','Depo','Menhol','Vana/Sayaç','Kapı','Sürücü']
+        }
+
+
+
+    });
+
+}());
+var VektorChooser = VektorChooser || {};
+
+
+(function() {
+    'use strict';
+
+    // BaseDevice Model, other device models will be extended from this
+    // ----------
+
+
+    VektorChooser.additionalPackageList.VTacho = new VektorChooser.AdditionalPackageModel.extend({
+
+        defaults: {
+            //name of device
+            name : 'VTacho',
+            //type of vehicles available
+            vehicleTypes : ['VFleet CAN'],
+            //default props are given
+            props : ['Uzaktan Veri İndirme','Günlük Sürüş Saati Takibi']
+        }
+
+
+
+
+
+
+
+
+    });
+
+}());
+var VektorChooser = VektorChooser || {};
+
+
+(function() {
+    'use strict';
+
+    // BaseDevice Model, other device models will be extended from this
+    // ----------
+
+
+    VektorChooser.additionalPackageList.VTrailer = new VektorChooser.AdditionalPackageModel.extend({
+
+        defaults: {
+            //name of device
+            name : 'VTrailer',
+            //type of vehicles available
+            vehicleTypes : ['VFleet CAN'],
+            //default props are given
+            props : ['Treyler ID']
+        },
+
+
+        initialize: function() {
+
+            //this.setProps();
+
+
+        },
+
+        setProps : function(){
+            var props = VektorChooser.defaultProps;
+            this.set( 'props', props.concat(this.get('props')));
+        }
+
+
+
+
+
+
+
+    });
+
+}());
+var VektorChooser = VektorChooser || {};
+
+
+(function() {
+    'use strict';
+
+    // BaseDevice Model, other device models will be extended from this
+    // ----------
+
+
+    VektorChooser.additionalPackageList.ViV = new VektorChooser.AdditionalPackageModel.extend({
+
+        defaults: {
+            //name of device
+            name : 'ViV',
+            //type of vehicles available
+            vehicleTypes : ['VFleet','VFleet CAN','VMax'],
+            //default props are given
+            props : ['Mesajlaşma','Navigasyon','Görev Atama']
+        }
+
 
     });
 

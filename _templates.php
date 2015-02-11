@@ -46,6 +46,18 @@
                     </label>
                 </div>
                 <% }); %>
+
+                <% _.each( data.additionalProps,function(element, index, list){  %>
+                <div style="width:49%;display:block;float:left;">
+
+                    <label>
+                        <input type="checkbox" data-filter="additionalProps"
+
+                        class="vc-filter-item vc-filter-item--additionalProps" value="<%=element%>"/>
+                        <span ><%=element%></span>
+                    </label>
+                </div>
+                <% }); %>
             </div>
             <% } %>
         </div>

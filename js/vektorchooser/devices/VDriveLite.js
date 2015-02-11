@@ -17,7 +17,9 @@ var VektorChooser = VektorChooser || {};
         //default props are given
         props : [
             'Tak-Çalıştır'
-        ]
+        ],
+
+        additionalPackages : []
 
     });
 

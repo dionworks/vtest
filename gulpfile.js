@@ -15,6 +15,8 @@ var scriptsToConcat = [
     './js/vektorchooser/models/*.js',
     //devices
     './js/vektorchooser/devices/*.js',
+    //additional packages
+    './js/vektorchooser/additional_packages/*.js',
 
     //views
     './js/vektorchooser/views/*.js'

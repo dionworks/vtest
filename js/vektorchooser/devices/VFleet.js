@@ -21,16 +21,8 @@ var VektorChooser = VektorChooser || {};
             'Kablolu Montaj'
         ],
         //name of additionalPackages like ViV, VSense etc.
-        additionalProps : [
-            'Mesajlaşma',
-            'Navigasyon',
-            'Görev Atama',
-            'Isı',
-            'Depo',
-            'Menhol',
-            'Vana/Sayaç',
-            'Kapı',
-            'Sürücü'
+        additionalPackages : [
+
         ]
 
     });

@@ -45,6 +45,7 @@ function vSearch(filterModel)
 
 
     VektorChooser.deviceList = {};
+    VektorChooser.additionalPackageList = {};
 
     VektorChooser.currentView = {};
 
