@@ -18,7 +18,8 @@ var VektorChooser = VektorChooser || {};
             //default props are given
             props : [],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : [],
+            additionalPackages : [],
+            additionalProps : []
         },
 
 

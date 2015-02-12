@@ -1,12 +1,82 @@
 var VektorChooser = VektorChooser || {};
 
+//define variables
+var dataModel, filterModel, resultModel;
 
-var dataModel,filterModel,resultModel;
+
+VektorChooser.deviceList = {};
+VektorChooser.additionalPackageList = {};
+VektorChooser.currentView = {};
+
+VektorChooser.defaultProps = [
+    'Konum Takibi',
+    'Yolculuk Raporu',
+    'Anlık Uyarılar',
+    'Kural Tanımlama',
+    'Geçmiş Konumlar',
+    'Kendi Haritanı Yarat',
+    'Mesai İçi ve Dışı Kullanım',
+    'Rota Takibi',
+    'Otomatik Raporlama'
+];
+
+
+jQuery(function ($) {
+
+    //init. collections and add device and package models into them
+    vektorInit();
+
+    //init dataModel, filterModel, resultModel which will be used in view
+    vektorModelsInit();
+
+    VektorChooser.currentView.form = new VektorChooser.FormView(dataModel, filterModel, resultModel);
+
+});
+
+
+
+
+var VektorChooser = VektorChooser || {};
+
+
+function vektorInit()
+{
+    //init collection
+    VektorChooser.devices = new VektorChooser.DeviceCollection;
+    VektorChooser.additionalPackages = new VektorChooser.AdditionalPackageCollection;
+
+    //add devices to the collection
+    _.each(VektorChooser.deviceList, function (obj, key, list) {
+
+        VektorChooser.devices.add(obj);
+
+    });
+
+    //add additional packages to the collection
+    _.each(VektorChooser.additionalPackageList, function (obj, key, list) {
+
+        VektorChooser.additionalPackages.add(obj);
+
+    });
+
+}
+
+function vektorModelsInit()
+{
+    dataModel = new VektorChooser.DataModel();
+    filterModel = new VektorChooser.FilterModel();
+    resultModel = new VektorChooser.ResultModel();
+}
+
+
+var VektorChooser = VektorChooser || {};
+
 
 //gets filtered collection, and forms a new temporary collection
 function vektorResultDevices(models){
     VektorChooser.resultDevices = new VektorChooser.DeviceCollection(models);
 }
+
 
 function vSearch(filterModel)
 {
@@ -14,21 +84,49 @@ function vSearch(filterModel)
     jQuery('#result-area').html('<h1>Araçlar<h1>');
 
     VektorChooser.resultDevices = VektorChooser.devices;
+    VektorChooser.resultAdditionalPackages = VektorChooser.additionalPackages;
 
+    //all the filters from the view
     var filters = filterModel.get('filters');
 
+    console.log('FILTER MODEL:',filterModel);
+
+    //run through filters for device list
     _.each(filters,function(v,k){
 
+        //check if its valid filter
+        if(_.indexOf(VektorChooser.resultDevices.validFilters,v.key) == -1) {
+            console.log('This skipped',v.key,v.value);
+            return;
+        }
+
         VektorChooser.filteredDevices = VektorChooser.resultDevices.filterBy(v.key, v.value);
-        console.log(v,k);
+
+        vektorResultDevices(VektorChooser.filteredDevices);
+    });
+
+    console.log('Package filters:',filterModel.get('additionalProps'));
+
+
+    //run through filters for remaining packages list
+    _.each(filters,function(v,k){
+
+        //check if its valid filter
+        if('additionalProps' != v.key ) {
+            console.log('This skipped pack filter',v.key,v.value);
+            return;
+        }
+
+        VektorChooser.filteredDevices = VektorChooser.resultAdditionalPackages.filterBy('props', v.value);
 
         vektorResultDevices(VektorChooser.filteredDevices);
     });
 
 
+    //TODO: should be in a view
+    //write results to page
     VektorChooser.resultDevices.forEach(function(v,k){
-        console.log(k, v.get('name'));
-
+        //console.log(k, v.get('name'));
         jQuery('#result-area').append('<h2>'+v.get('name')+'<h2>');
     });
 
@@ -37,66 +135,62 @@ function vSearch(filterModel)
     VektorChooser.events.trigger('result.update',VektorChooser.resultDevices);
 }
 
+var VektorChooser = VektorChooser || {};
+
 (function () {
     'use strict';
 
-    var ourObject = {};
+    // Subject Collection: Collection of pages in a magazine
+    // ---------------
+
+
+    VektorChooser.AdditionalPackageCollection = Backbone.Collection.extend({
+
+        // Reference to this collection's model.
+        model: VektorChooser.AdditionalPackageModel,
+
+
+        validFilters  : ['props','name'],
 
 
 
-    VektorChooser.deviceList = {};
-    VektorChooser.additionalPackageList = {};
+        //if item is array, look through
+        filterBy: function (filter, value) {
 
-    VektorChooser.currentView = {};
+            //check if its valid filter
+            if(_.indexOf(this.validFilters,filter) == -1) {
+                return false;
+            }
 
-    VektorChooser.defaultProps = [
-        'Konum Takibi',
-        'Yolculuk Raporu',
-        'Anlık Uyarılar',
-        'Kural Tanımlama',
-        'Geçmiş Konumlar',
-        'Kendi Haritanı Yarat',
-        'Mesai İçi ve Dışı Kullanım',
-        'Rota Takibi',
-        'Otomatik Raporlama'
-    ];
+            return this.filter(function (page) {
+
+
+                var prop = page.get('name');
 
 
 
+                if( _.isArray(prop) ) {
+                    return (_.indexOf(prop, value) >= 0)? true : false;
+                } else {
 
+                    if(_.isArray(value) ) {
+                        return (_.indexOf(value,prop) >= 0)? true : false;
+                    }
 
+                    return page.get(filter) == value;
+                }
 
-    jQuery(function ($) {
+            });
+        }
 
-        //init collection
-        VektorChooser.devices = new VektorChooser.DeviceCollection;
-
-        //add devices to the collection
-        _.each(VektorChooser.deviceList,function(obj,key,list) {
-
-            VektorChooser.devices.add(obj);
-
-        });
-
-
-        dataModel = new VektorChooser.DataModel();
-        filterModel = new VektorChooser.FilterModel();
-        resultModel = new VektorChooser.ResultModel();
-
-
-        VektorChooser.currentView.form = new VektorChooser.FormView(dataModel,filterModel,resultModel);
-
-
-        //search test
 
 
 
     });
 
 
+
 }());
-
-
 var VektorChooser = VektorChooser || {};
 
 (function () {
@@ -111,20 +205,17 @@ var VektorChooser = VektorChooser || {};
         // Reference to this collection's model.
         model: VektorChooser.DeviceModel,
 
-
-        getPageByOrder: function (order) {
-            return this.filter(function (page) {
-                return page.get('globalOrder') == order;
-            });
-        },
+        validFilters  : ['vehicleTypes','props'],
 
         //if item is array, look through
         filterBy: function (filter, value) {
+
+
+
             return this.filter(function (page) {
 
                 var prop = page.get(filter);
 
-                //console.log('dev col',filter,page,prop,value);
 
                 if( _.isArray(prop) ) {
                     return (_.indexOf(prop, value) >= 0)? true : false;
@@ -134,17 +225,11 @@ var VektorChooser = VektorChooser || {};
                 }
 
             });
-        },
-
-        /**
-         * Gets the page where isCurrent true
-         * @returns {Array|*}
-         */
-        getCurrentPage: function () {
-            return this.filter(function (page) {
-                return page.get('isCurrent') == true;
-            });
         }
+
+
+
+
     });
 
 
@@ -171,6 +256,7 @@ var VektorChooser = VektorChooser || {};
         //to the search
         resultModel.set('devices',devices);
 
+        console.log('In Event:',resultModel.get('additionalPackages'));
 
     });
 
@@ -192,7 +278,7 @@ var VektorChooser = VektorChooser || {};
             //name of device
             name : '',
             //type of vehicles available
-            vehicleTypes : [],
+            devices : [],
             //default props are given
             props : []
         },
@@ -203,12 +289,8 @@ var VektorChooser = VektorChooser || {};
             //this.setProps();
 
 
-        },
-
-        setProps : function(){
-            var props = VektorChooser.defaultProps;
-            this.set( 'props', props.concat(this.get('props')));
         }
+
 
 
 
@@ -315,7 +397,8 @@ var VektorChooser = VektorChooser || {};
             //default props are given
             props : [],
             //name of additionalPackages like ViV, VSense etc.
-            additionalProps : [],
+            additionalPackages : [],
+            additionalProps : []
         },
 
 
@@ -359,7 +442,9 @@ var VektorChooser = VektorChooser || {};
 
             vehicleTypes : [],
 
-            props : []
+            props : [],
+
+            additionalProps : []
         },
 
 
@@ -373,6 +458,7 @@ var VektorChooser = VektorChooser || {};
         resetFiltersTypes : function(items){
             this.set('vehicleTypes',[]);
             this.set('props',[]);
+            this.set('additionalProps',[]);
         },
 
         setFilters : function(){
@@ -395,6 +481,8 @@ var VektorChooser = VektorChooser || {};
 
             });
 
+            console.log('filters now:',this.get('additionalProps'));
+
             this.updateChangeTime();
 
             //Trigger the search event with this model
@@ -411,7 +499,6 @@ var VektorChooser = VektorChooser || {};
         {
             var M = this.get(filter.key);
 
-            //console.log(this,M,filter.key,filter.value);
 
             if(_.isArray(M) && !singleItem) {
                 M.push(filter.value);
@@ -453,23 +540,31 @@ var VektorChooser = VektorChooser || {};
             //collection of devices in the results
             devices : false,
 
+            packages : false,
+
             changeTime : '',
 
             vehicleTypes : [],
 
-            props : []
+            props : [],
+
+            additionalPackages : [],
+
+            additionalProps : []
         },
 
 
         initialize: function() {
 
             this.on('change:devices', this.setResults);
+            //this.on('change:additionalPackages', this.updatePackageProps);
         },
 
         resetModel : function(items){
-            //this.set('results',false);
             this.set('vehicleTypes',[]);
             this.set('props',[]);
+            this.set('additionalPackages',[]);
+            this.set('additionalProps',[]);
         },
 
         setResults : function(){
@@ -484,15 +579,27 @@ var VektorChooser = VektorChooser || {};
             this.resetModel();
 
 
-
+            //collect all available props and additional packages from devices
             devices.forEach(function(device,index,list){
 
                 var props = _.union(window.resultModel.get('props'),device.get('props'));
 
+                var aPacks = _.union(window.resultModel.get('additionalPackages'),device.get('additionalPackages'));
+
                 window.resultModel.set('props',props);
+                window.resultModel.set('additionalPackages',aPacks);
 
             });
 
+            console.log('RESULT APACKS',this.get('additionalPackages'));
+
+            //fill additional props through additionalPackages
+            var apacks = this.get('additionalPackages');
+
+
+            this.updatePackageProps();
+
+            console.log(this.get());
 
             this.updateChangeTime();
 
@@ -502,6 +609,37 @@ var VektorChooser = VektorChooser || {};
         {
             var d = new Date();
             this.set('changeTime', d.getTime() );
+        },
+
+
+        updatePackageProps : function(){
+            var packs = this.get('additionalPackages');
+            console.log('Packs Updated',packs);
+            if( packs.length == 0 ) {
+                this.set('packages',false);
+                return false;
+            }
+
+            //filter packages models from collection
+
+            VektorChooser.resultAdditionalPackages = VektorChooser.additionalPackages.filterBy('name',packs);
+
+            this.set('packages',VektorChooser.resultAdditionalPackages);
+
+            console.log('RES PACKS in RES',VektorChooser.resultAdditionalPackages);
+
+            var packages = this.get('packages');
+
+            //now update package property list
+            packages.forEach(function(pack,index,list){
+
+                var additionalProps = _.union(window.resultModel.get('additionalProps'),pack.get('props'));
+
+
+                window.resultModel.set('additionalProps',additionalProps);
+
+            });
+
         }
 
 
@@ -590,7 +728,7 @@ var VektorChooser = VektorChooser || {};
         ],
         //name of additionalPackages like ViV, VSense etc.
         additionalPackages : [
-
+            'ViV','VSense'
         ]
 
     });
@@ -622,7 +760,7 @@ var VektorChooser = VektorChooser || {};
         ],
         //name of additionalPackages like ViV, VSense etc.
         additionalPackages : [
-
+            'ViV','VSense','VTacho','VTrailer'
         ]
 
     });
@@ -650,7 +788,9 @@ var VektorChooser = VektorChooser || {};
                 'Gerçek KM Tüketim'
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalPackages : []
+            additionalPackages : [
+                'ViV','VSense','VFrigo'
+            ]
 
     });
 
@@ -713,16 +853,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VFrigo = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VFrigo = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'VFrigo',
             //type of vehicles available
-            vehicleTypes : ['VMax'],
+            devices : ['VMax'],
             //default props are given
             props : ['Carrier','ThermoKing']
-        }
 
 
 
@@ -744,16 +882,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VSense = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VSense = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'VSense',
             //type of vehicles available
-            vehicleTypes : ['VFleet','VFleet CAN','VMax'],
+            devices : ['VFleet','VFleet CAN','VMax'],
             //default props are given
             props : ['Isı','Depo','Menhol','Vana/Sayaç','Kapı','Sürücü']
-        }
 
 
 
@@ -770,16 +906,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VTacho = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VTacho = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'VTacho',
             //type of vehicles available
-            vehicleTypes : ['VFleet CAN'],
+            devices : ['VFleet CAN'],
             //default props are given
             props : ['Uzaktan Veri İndirme','Günlük Sürüş Saati Takibi']
-        }
 
 
 
@@ -801,29 +935,17 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VTrailer = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VTrailer = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
-            //name of device
-            name : 'VTrailer',
-            //type of vehicles available
-            vehicleTypes : ['VFleet CAN'],
-            //default props are given
-            props : ['Treyler ID']
-        },
+        //name of device
+        name : 'VTrailer',
+        //type of vehicles available
+        devices : ['VFleet CAN'],
+        //default props are given
+        props : ['Treyler ID']
 
 
-        initialize: function() {
 
-            //this.setProps();
-
-
-        },
-
-        setProps : function(){
-            var props = VektorChooser.defaultProps;
-            this.set( 'props', props.concat(this.get('props')));
-        }
 
 
 
@@ -844,16 +966,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.ViV = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.ViV = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'ViV',
             //type of vehicles available
-            vehicleTypes : ['VFleet','VFleet CAN','VMax'],
+            devices : ['VFleet','VFleet CAN','VMax'],
             //default props are given
             props : ['Mesajlaşma','Navigasyon','Görev Atama']
-        }
 
 
     });
@@ -921,7 +1041,7 @@ var VektorChooser = VektorChooser || {};
 
             //if its a vehicle change, uncheck all of the props
             if( $el.data('filter') == 'vehicleTypes' ) {
-                jQuery('.vc-filter-item--props').attr('checked',false);
+                jQuery('.vc-filter-item--props,.vc-filter-item--package').attr('checked',false);
             }
 
             var filters = [];

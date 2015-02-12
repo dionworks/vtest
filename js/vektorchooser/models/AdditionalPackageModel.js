@@ -14,7 +14,7 @@ var VektorChooser = VektorChooser || {};
             //name of device
             name : '',
             //type of vehicles available
-            vehicleTypes : [],
+            devices : [],
             //default props are given
             props : []
         },
@@ -25,12 +25,8 @@ var VektorChooser = VektorChooser || {};
             //this.setProps();
 
 
-        },
-
-        setProps : function(){
-            var props = VektorChooser.defaultProps;
-            this.set( 'props', props.concat(this.get('props')));
         }
+
 
 
 

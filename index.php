@@ -23,9 +23,9 @@
         </div>
         <div id="result-area"></div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="http://underscorejs.org/underscore.js"></script>
-        <script src="http://backbonejs.org/backbone.js"></script>
+        <script src="js/vendor/jquery.min.js"></script>
+        <script src="js/vendor/underscore.js"></script>
+        <script src="js/vendor/backbone.js"></script>
         <script src="js/combined.js"></script>
 
 

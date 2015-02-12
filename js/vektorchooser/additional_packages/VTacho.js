@@ -8,16 +8,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VTacho = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VTacho = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'VTacho',
             //type of vehicles available
-            vehicleTypes : ['VFleet CAN'],
+            devices : ['VFleet CAN'],
             //default props are given
             props : ['Uzaktan Veri İndirme','Günlük Sürüş Saati Takibi']
-        }
 
 
 

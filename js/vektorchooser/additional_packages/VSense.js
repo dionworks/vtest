@@ -8,16 +8,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VSense = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VSense = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'VSense',
             //type of vehicles available
-            vehicleTypes : ['VFleet','VFleet CAN','VMax'],
+            devices : ['VFleet','VFleet CAN','VMax'],
             //default props are given
             props : ['Isı','Depo','Menhol','Vana/Sayaç','Kapı','Sürücü']
-        }
 
 
 

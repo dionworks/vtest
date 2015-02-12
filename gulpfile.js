@@ -9,7 +9,10 @@ var plumber = require('gulp-plumber');
 var scriptsToConcat = [
 
     './js/vektorchooser/vektorchooser.js',
-    './js/vektorchooser/DeviceCollection.js',
+    './js/vektorchooser/functions.js',
+    './js/vektorchooser/search.js',
+    //collections
+    './js/vektorchooser/collections/*.js',
     './js/vektorchooser/Events.js',
     //models
     './js/vektorchooser/models/*.js',

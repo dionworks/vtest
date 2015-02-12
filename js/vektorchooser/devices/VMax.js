@@ -20,7 +20,9 @@ var VektorChooser = VektorChooser || {};
                 'Gerçek KM Tüketim'
             ],
             //name of additionalPackages like ViV, VSense etc.
-            additionalPackages : []
+            additionalPackages : [
+                'ViV','VSense','VFrigo'
+            ]
 
     });
 

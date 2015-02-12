@@ -8,29 +8,17 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VTrailer = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VTrailer = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
-            //name of device
-            name : 'VTrailer',
-            //type of vehicles available
-            vehicleTypes : ['VFleet CAN'],
-            //default props are given
-            props : ['Treyler ID']
-        },
+        //name of device
+        name : 'VTrailer',
+        //type of vehicles available
+        devices : ['VFleet CAN'],
+        //default props are given
+        props : ['Treyler ID']
 
 
-        initialize: function() {
 
-            //this.setProps();
-
-
-        },
-
-        setProps : function(){
-            var props = VektorChooser.defaultProps;
-            this.set( 'props', props.concat(this.get('props')));
-        }
 
 
 

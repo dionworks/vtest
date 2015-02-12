@@ -19,6 +19,7 @@ var VektorChooser = VektorChooser || {};
         //to the search
         resultModel.set('devices',devices);
 
+        console.log('In Event:',resultModel.get('additionalPackages'));
 
     });
 

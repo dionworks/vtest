@@ -8,16 +8,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.ViV = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.ViV = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'ViV',
             //type of vehicles available
-            vehicleTypes : ['VFleet','VFleet CAN','VMax'],
+            devices : ['VFleet','VFleet CAN','VMax'],
             //default props are given
             props : ['Mesajlaşma','Navigasyon','Görev Atama']
-        }
 
 
     });

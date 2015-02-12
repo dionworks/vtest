@@ -8,16 +8,14 @@ var VektorChooser = VektorChooser || {};
     // ----------
 
 
-    VektorChooser.additionalPackageList.VFrigo = new VektorChooser.AdditionalPackageModel.extend({
+    VektorChooser.additionalPackageList.VFrigo = new VektorChooser.AdditionalPackageModel({
 
-        defaults: {
             //name of device
             name : 'VFrigo',
             //type of vehicles available
-            vehicleTypes : ['VMax'],
+            devices : ['VMax'],
             //default props are given
             props : ['Carrier','ThermoKing']
-        }
 
 
 

@@ -60,7 +60,7 @@ var VektorChooser = VektorChooser || {};
 
             //if its a vehicle change, uncheck all of the props
             if( $el.data('filter') == 'vehicleTypes' ) {
-                jQuery('.vc-filter-item--props').attr('checked',false);
+                jQuery('.vc-filter-item--props,.vc-filter-item--package').attr('checked',false);
             }
 
             var filters = [];

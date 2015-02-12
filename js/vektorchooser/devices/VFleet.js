@@ -22,7 +22,7 @@ var VektorChooser = VektorChooser || {};
         ],
         //name of additionalPackages like ViV, VSense etc.
         additionalPackages : [
-
+            'ViV','VSense'
         ]
 
     });

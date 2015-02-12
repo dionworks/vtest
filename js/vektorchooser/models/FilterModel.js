@@ -17,7 +17,9 @@ var VektorChooser = VektorChooser || {};
 
             vehicleTypes : [],
 
-            props : []
+            props : [],
+
+            additionalProps : []
         },
 
 
@@ -31,6 +33,7 @@ var VektorChooser = VektorChooser || {};
         resetFiltersTypes : function(items){
             this.set('vehicleTypes',[]);
             this.set('props',[]);
+            this.set('additionalProps',[]);
         },
 
         setFilters : function(){
@@ -53,6 +56,8 @@ var VektorChooser = VektorChooser || {};
 
             });
 
+            console.log('filters now:',this.get('additionalProps'));
+
             this.updateChangeTime();
 
             //Trigger the search event with this model
@@ -69,7 +74,6 @@ var VektorChooser = VektorChooser || {};
         {
             var M = this.get(filter.key);
 
-            //console.log(this,M,filter.key,filter.value);
 
             if(_.isArray(M) && !singleItem) {
                 M.push(filter.value);

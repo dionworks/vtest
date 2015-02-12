@@ -53,8 +53,16 @@
                     <label>
                         <input type="checkbox" data-filter="additionalProps"
 
-                        class="vc-filter-item vc-filter-item--additionalProps" value="<%=element%>"/>
-                        <span ><%=element%></span>
+                        <% if (_.indexOf(filter.additionalProps,element) >= 0) { %>
+                        checked="checked"
+                        <% } %>
+
+                        class="vc-filter-item vc-filter-item--package" value="<%=element%>"/>
+                        <span
+                        <% if (result.additionalProps.length && _.indexOf(result.additionalProps,element) == -1) { %>
+                        style="text-decoration: line-through;"
+                        <% } %>
+                            ><%=element%></span>
                     </label>
                 </div>
                 <% }); %>
