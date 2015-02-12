@@ -89,14 +89,14 @@ function vSearch(filterModel)
     //all the filters from the view
     var filters = filterModel.get('filters');
 
-    console.log('FILTER MODEL:',filterModel);
+    //console.log('FILTER MODEL:',filterModel);
 
     //run through filters for device list
+    //this will only use vehicleType and props, not additionalProps
     _.each(filters,function(v,k){
 
-        //check if its valid filter
+        //check if its valid filter, vehicleType or props
         if(_.indexOf(VektorChooser.resultDevices.validFilters,v.key) == -1) {
-            console.log('This skipped',v.key,v.value);
             return;
         }
 
@@ -105,34 +105,68 @@ function vSearch(filterModel)
         vektorResultDevices(VektorChooser.filteredDevices);
     });
 
-    console.log('Package filters:',filterModel.get('additionalProps'));
 
+    //Trigger result model changes with device collection
+    VektorChooser.events.trigger('result.update',VektorChooser.resultDevices);
+
+    console.log('Packages in result model:',resultModel.get('packages'));
+
+
+    VektorChooser.filteredForPackages = false;
 
     //run through filters for remaining packages list
     _.each(filters,function(v,k){
 
         //check if its valid filter
         if('additionalProps' != v.key ) {
-            console.log('This skipped pack filter',v.key,v.value);
             return;
         }
 
-        VektorChooser.filteredDevices = VektorChooser.resultAdditionalPackages.filterBy('props', v.value);
+        var packs = resultModel.get('packages');
 
-        vektorResultDevices(VektorChooser.filteredDevices);
+        VektorChooser.resultAdditionalPackages = VektorChooser.resultAdditionalPackages.filterBy('props', v.value);
+
+        //console.log('Filtered PACKS:',VektorChooser.filteredPackages,VektorChooser.resultAdditionalPackages);
+
+        VektorChooser.filteredForPackages = true;
+        //new collection from the list
+        VektorChooser.resultAdditionalPackages = new VektorChooser.AdditionalPackageCollection(VektorChooser.resultAdditionalPackages);
     });
 
+    //then work with result devices again to determine final versiyon
+    if( !VektorChooser.resultAdditionalPackages.isEmpty() && VektorChooser.filteredForPackages ) {
+
+        VektorChooser.resultAdditionalPackages.forEach(function(pack,key){
+
+            var packName = pack.get('name');
+
+            VektorChooser.filteredDevices = VektorChooser.resultDevices.filterBy('additionalPackages', packName);
+
+            vektorResultDevices(VektorChooser.filteredDevices);
+        });
+
+    }
+
+
+    //Trigger result model changes with device collection
+    VektorChooser.events.trigger('result.update',VektorChooser.resultDevices);
 
     //TODO: should be in a view
     //write results to page
     VektorChooser.resultDevices.forEach(function(v,k){
         //console.log(k, v.get('name'));
         jQuery('#result-area').append('<h2>'+v.get('name')+'<h2>');
+        jQuery('#result-area').append('<h4>'+v.get('additionalPackages')+'<h4>');
+    });
+    //TODO: should be in a view
+    //write results to page
+    VektorChooser.resultAdditionalPackages.forEach(function(v,k){
+        //console.log(k, v.get('name'));
+        jQuery('#result-area').append('<h4>- '+v.get('name')+'<h4>');
     });
 
 
-    //Trigger result model changes with device collection
-    VektorChooser.events.trigger('result.update',VektorChooser.resultDevices);
+
 }
 
 var VektorChooser = VektorChooser || {};
@@ -165,7 +199,7 @@ var VektorChooser = VektorChooser || {};
             return this.filter(function (page) {
 
 
-                var prop = page.get('name');
+                var prop = page.get(filter);
 
 
 
@@ -179,6 +213,25 @@ var VektorChooser = VektorChooser || {};
 
                     return page.get(filter) == value;
                 }
+
+            });
+        },
+
+        //if item is array, look through
+        byNameList: function ( value) {
+
+            return this.models.filter(function (page) {
+
+
+                var prop = page.get('name');
+
+
+                    if(_.isArray(value) ) {
+                        return (_.indexOf(value, prop) >= 0);
+                    }
+
+                    return page.get(filter) == value;
+
 
             });
         }
@@ -205,7 +258,7 @@ var VektorChooser = VektorChooser || {};
         // Reference to this collection's model.
         model: VektorChooser.DeviceModel,
 
-        validFilters  : ['vehicleTypes','props'],
+        validFilters  : ['vehicleTypes','props','additionalPackages'],
 
         //if item is array, look through
         filterBy: function (filter, value) {
@@ -256,7 +309,7 @@ var VektorChooser = VektorChooser || {};
         //to the search
         resultModel.set('devices',devices);
 
-        console.log('In Event:',resultModel.get('additionalPackages'));
+        //console.log('In Event:',resultModel.get('additionalPackages'));
 
     });
 
@@ -583,23 +636,21 @@ var VektorChooser = VektorChooser || {};
             devices.forEach(function(device,index,list){
 
                 var props = _.union(window.resultModel.get('props'),device.get('props'));
+                window.resultModel.set('props',props);
 
                 var aPacks = _.union(window.resultModel.get('additionalPackages'),device.get('additionalPackages'));
-
-                window.resultModel.set('props',props);
                 window.resultModel.set('additionalPackages',aPacks);
 
             });
 
-            console.log('RESULT APACKS',this.get('additionalPackages'));
+            console.log('RESULT Add. PACKS',this.get('additionalPackages'));
+
 
             //fill additional props through additionalPackages
-            var apacks = this.get('additionalPackages');
+            //var apacks = this.get('additionalPackages');
 
 
             this.updatePackageProps();
-
-            console.log(this.get());
 
             this.updateChangeTime();
 
@@ -622,11 +673,15 @@ var VektorChooser = VektorChooser || {};
 
             //filter packages models from collection
 
-            VektorChooser.resultAdditionalPackages = VektorChooser.additionalPackages.filterBy('name',packs);
+            VektorChooser.resultAdditionalPackages = VektorChooser.additionalPackages.byNameList(packs);
+
+            //new collection from the list
+            VektorChooser.resultAdditionalPackages = new VektorChooser.AdditionalPackageCollection(VektorChooser.resultAdditionalPackages);
+
 
             this.set('packages',VektorChooser.resultAdditionalPackages);
 
-            console.log('RES PACKS in RES',VektorChooser.resultAdditionalPackages);
+            console.log('RES PACKS in RES',VektorChooser.resultAdditionalPackages,VektorChooser.additionalPackages);
 
             var packages = this.get('packages');
 

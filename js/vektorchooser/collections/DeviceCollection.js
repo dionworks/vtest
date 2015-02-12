@@ -12,7 +12,7 @@ var VektorChooser = VektorChooser || {};
         // Reference to this collection's model.
         model: VektorChooser.DeviceModel,
 
-        validFilters  : ['vehicleTypes','props'],
+        validFilters  : ['vehicleTypes','props','additionalPackages'],
 
         //if item is array, look through
         filterBy: function (filter, value) {

@@ -57,23 +57,21 @@ var VektorChooser = VektorChooser || {};
             devices.forEach(function(device,index,list){
 
                 var props = _.union(window.resultModel.get('props'),device.get('props'));
+                window.resultModel.set('props',props);
 
                 var aPacks = _.union(window.resultModel.get('additionalPackages'),device.get('additionalPackages'));
-
-                window.resultModel.set('props',props);
                 window.resultModel.set('additionalPackages',aPacks);
 
             });
 
-            console.log('RESULT APACKS',this.get('additionalPackages'));
+            console.log('RESULT Add. PACKS',this.get('additionalPackages'));
+
 
             //fill additional props through additionalPackages
-            var apacks = this.get('additionalPackages');
+            //var apacks = this.get('additionalPackages');
 
 
             this.updatePackageProps();
-
-            console.log(this.get());
 
             this.updateChangeTime();
 
@@ -96,11 +94,15 @@ var VektorChooser = VektorChooser || {};
 
             //filter packages models from collection
 
-            VektorChooser.resultAdditionalPackages = VektorChooser.additionalPackages.filterBy('name',packs);
+            VektorChooser.resultAdditionalPackages = VektorChooser.additionalPackages.byNameList(packs);
+
+            //new collection from the list
+            VektorChooser.resultAdditionalPackages = new VektorChooser.AdditionalPackageCollection(VektorChooser.resultAdditionalPackages);
+
 
             this.set('packages',VektorChooser.resultAdditionalPackages);
 
-            console.log('RES PACKS in RES',VektorChooser.resultAdditionalPackages);
+            console.log('RES PACKS in RES',VektorChooser.resultAdditionalPackages,VektorChooser.additionalPackages);
 
             var packages = this.get('packages');
 

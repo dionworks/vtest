@@ -28,7 +28,7 @@ var VektorChooser = VektorChooser || {};
             return this.filter(function (page) {
 
 
-                var prop = page.get('name');
+                var prop = page.get(filter);
 
 
 
@@ -42,6 +42,25 @@ var VektorChooser = VektorChooser || {};
 
                     return page.get(filter) == value;
                 }
+
+            });
+        },
+
+        //if item is array, look through
+        byNameList: function ( value) {
+
+            return this.models.filter(function (page) {
+
+
+                var prop = page.get('name');
+
+
+                    if(_.isArray(value) ) {
+                        return (_.indexOf(value, prop) >= 0);
+                    }
+
+                    return page.get(filter) == value;
+
 
             });
         }
