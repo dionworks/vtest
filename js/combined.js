@@ -764,12 +764,15 @@ var VektorChooser = VektorChooser || {};
 
             var packages = this.get('packages');
 
-            var enabledPackages = packages.filterHasProps(selectedProps);
-            console.log('selected Props',selectedProps,packages);
-            console.log('enabledPackages',enabledPackages);
+            if( packages.length ) {
 
-            if( enabledPackages.length ) {
-                this.set('enabledPackages',enabledPackages);
+                var enabledPackages = packages.filterHasProps(selectedProps);
+                console.log('selected Props',selectedProps,packages);
+                console.log('enabledPackages',enabledPackages);
+
+                if( enabledPackages.length ) {
+                    this.set('enabledPackages',enabledPackages);
+                }
             }
 
         },
