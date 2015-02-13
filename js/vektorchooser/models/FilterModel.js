@@ -50,13 +50,13 @@ var VektorChooser = VektorChooser || {};
 
                     current.updateFilterItem(filter,true);
                 } else {
-                    current.updateFilterItem(filter,false);
 
+                    //view will use it as a prop anyways
+                    current.updateFilterItem(filter,false);
                 }
 
             });
 
-            console.log('filters now:',this.get('additionalProps'));
 
             this.updateChangeTime();
 
@@ -82,15 +82,7 @@ var VektorChooser = VektorChooser || {};
             }
 
             this.set(filter.key,M);
-        },
-
-
-        search : function(){
-            window.vSearch(this);
-
-
         }
-
 
 
 

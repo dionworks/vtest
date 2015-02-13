@@ -51,18 +51,20 @@
                 <div style="width:49%;display:block;float:left;">
 
                     <label>
-                        <input type="checkbox" data-filter="additionalProps"
-
-                        <% if (_.indexOf(filter.additionalProps,element) >= 0) { %>
+                        <input type="checkbox" data-filter="props" data-additional="yes"
+                        <% if (_.indexOf(filter.props,element) >= 0) { %>
                         checked="checked"
                         <% } %>
 
-                        class="vc-filter-item vc-filter-item--package" value="<%=element%>"/>
+                        <% if (result.props.length && _.indexOf(result.props,element) == -1) { %>
+                        disabled="disabled"
+                        <% } %>
+                        class="vc-filter-item vc-filter-item--props" value="<%=element%>"/>
                         <span
-                        <% if (result.additionalProps.length && _.indexOf(result.additionalProps,element) == -1) { %>
+                        <% if (result.props.length && _.indexOf(result.props,element) == -1) { %>
                         style="text-decoration: line-through;"
                         <% } %>
-                            ><%=element%></span>
+                        ><%=element%></span>
                     </label>
                 </div>
                 <% }); %>

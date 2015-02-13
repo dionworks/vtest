@@ -18,12 +18,6 @@ var VektorChooser = VektorChooser || {};
             props : ['Carrier','ThermoKing']
 
 
-
-
-
-
-
-
     });
 
 }());

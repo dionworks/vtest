@@ -59,7 +59,29 @@ var VektorChooser = VektorChooser || {};
                         return (_.indexOf(value, prop) >= 0);
                     }
 
-                    return page.get(filter) == value;
+                    return page.get('name') == value;
+
+
+            });
+        },
+
+        //if item is array, look through
+        filterHasProps: function (value) {
+
+            return this.models.filter(function (model) {
+
+
+                var props = model.get('props');
+
+
+                    if(_.isArray(value) ) {
+
+                        console.log('INTERSECT:',_.intersection(props,value).length);
+
+                        return (_.intersection(props,value).length);
+                    }
+
+                    return (_.indexOf(props,value) >= 0);
 
 
             });

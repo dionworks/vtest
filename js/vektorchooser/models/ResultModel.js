@@ -24,13 +24,17 @@ var VektorChooser = VektorChooser || {};
 
             additionalPackages : [],
 
-            additionalProps : []
+            additionalProps : [],
+
+            enabledPackages : [],
+
+            filterModel: false
         },
 
 
         initialize: function() {
 
-            this.on('change:devices', this.setResults);
+            //this.on('change:devices', this.setResults);
             //this.on('change:additionalPackages', this.updatePackageProps);
         },
 
@@ -39,12 +43,14 @@ var VektorChooser = VektorChooser || {};
             this.set('props',[]);
             this.set('additionalPackages',[]);
             this.set('additionalProps',[]);
+            this.set('enabledPackages',[]);
         },
 
         setResults : function(){
 
+            //final number of devices filtered
             var devices = this.get('devices');
-            console.log(devices);
+            //console.log(devices);
             if( !devices ) {
                 return false;
             }
@@ -64,14 +70,13 @@ var VektorChooser = VektorChooser || {};
 
             });
 
-            console.log('RESULT Add. PACKS',this.get('additionalPackages'));
 
-
-            //fill additional props through additionalPackages
-            //var apacks = this.get('additionalPackages');
 
 
             this.updatePackageProps();
+
+            //find enabled additional packages
+            this.findAdditionalPackages();
 
             this.updateChangeTime();
 
@@ -81,6 +86,25 @@ var VektorChooser = VektorChooser || {};
         {
             var d = new Date();
             this.set('changeTime', d.getTime() );
+        },
+
+        findAdditionalPackages : function(){
+
+
+
+            //selected on the form
+            var selectedProps = window.filterModel.get('additionalProps');
+
+            var packages = this.get('packages');
+
+            var enabledPackages = packages.filterHasProps(selectedProps);
+            console.log('selected Props',selectedProps,packages);
+            console.log('enabledPackages',enabledPackages);
+
+            if( enabledPackages.length ) {
+                this.set('enabledPackages',enabledPackages);
+            }
+
         },
 
 
@@ -102,7 +126,6 @@ var VektorChooser = VektorChooser || {};
 
             this.set('packages',VektorChooser.resultAdditionalPackages);
 
-            console.log('RES PACKS in RES',VektorChooser.resultAdditionalPackages,VektorChooser.additionalPackages);
 
             var packages = this.get('packages');
 

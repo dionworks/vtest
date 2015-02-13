@@ -59,6 +59,21 @@ function vektorInit()
 
     });
 
+    //add properties of devices to models props
+    VektorChooser.devices.forEach(function(device){
+        var packageList = device.get('additionalPackages');
+        if( packageList.length == 0 ) { return device;}
+
+        var packages = VektorChooser.additionalPackages.byNameList(packageList);
+
+        packages.forEach(function(pack,index,list){
+
+            device.setProps(pack.get('props'));
+
+        });
+        return device;
+    });
+
 }
 
 function vektorModelsInit()
@@ -68,7 +83,17 @@ function vektorModelsInit()
     resultModel = new VektorChooser.ResultModel();
 }
 
-
+//is it a props or additionalProp or not at all
+function vektorDetectPropertyType(item)
+{
+    if( _.indexOf(dataModel.get('props'),item) > -1 ) {
+        return 'props';
+    }
+    if( _.indexOf(dataModel.get('additionalProps'),item) > -1 ) {
+        return 'additionalProps';
+    }
+    return false;
+}
 var VektorChooser = VektorChooser || {};
 
 
@@ -95,10 +120,7 @@ function vSearch(filterModel)
     //this will only use vehicleType and props, not additionalProps
     _.each(filters,function(v,k){
 
-        //check if its valid filter, vehicleType or props
-        if(_.indexOf(VektorChooser.resultDevices.validFilters,v.key) == -1) {
-            return;
-        }
+
 
         VektorChooser.filteredDevices = VektorChooser.resultDevices.filterBy(v.key, v.value);
 
@@ -109,61 +131,110 @@ function vSearch(filterModel)
     //Trigger result model changes with device collection
     VektorChooser.events.trigger('result.update',VektorChooser.resultDevices);
 
-    console.log('Packages in result model:',resultModel.get('packages'));
-
-
-    VektorChooser.filteredForPackages = false;
-
-    //run through filters for remaining packages list
-    _.each(filters,function(v,k){
-
-        //check if its valid filter
-        if('additionalProps' != v.key ) {
-            return;
-        }
-
-        var packs = resultModel.get('packages');
-
-        VektorChooser.resultAdditionalPackages = VektorChooser.resultAdditionalPackages.filterBy('props', v.value);
-
-        //console.log('Filtered PACKS:',VektorChooser.filteredPackages,VektorChooser.resultAdditionalPackages);
-
-        VektorChooser.filteredForPackages = true;
-        //new collection from the list
-        VektorChooser.resultAdditionalPackages = new VektorChooser.AdditionalPackageCollection(VektorChooser.resultAdditionalPackages);
-    });
-
-    //then work with result devices again to determine final versiyon
-    if( !VektorChooser.resultAdditionalPackages.isEmpty() && VektorChooser.filteredForPackages ) {
-
-        VektorChooser.resultAdditionalPackages.forEach(function(pack,key){
-
-            var packName = pack.get('name');
-
-            VektorChooser.filteredDevices = VektorChooser.resultDevices.filterBy('additionalPackages', packName);
-
-            vektorResultDevices(VektorChooser.filteredDevices);
-        });
-
-    }
-
-
-    //Trigger result model changes with device collection
-    VektorChooser.events.trigger('result.update',VektorChooser.resultDevices);
 
     //TODO: should be in a view
     //write results to page
     VektorChooser.resultDevices.forEach(function(v,k){
         //console.log(k, v.get('name'));
         jQuery('#result-area').append('<h2>'+v.get('name')+'<h2>');
-        jQuery('#result-area').append('<h4>'+v.get('additionalPackages')+'<h4>');
+        if( v.get('additionalPackages').length ) {
+            jQuery('#result-area').append('<h4>Uyumlu paketler: '+v.get('additionalPackages')+'<h4>');
+        }
     });
+
+    jQuery('#result-area').append('<h2>Oluru olan paketler<h2>');
+
     //TODO: should be in a view
     //write results to page
     VektorChooser.resultAdditionalPackages.forEach(function(v,k){
         //console.log(k, v.get('name'));
-        jQuery('#result-area').append('<h4>- '+v.get('name')+'<h4>');
+        //jQuery('#result-area').append('<h4>- '+v.get('name')+'<h4>');
     });
+
+
+
+}
+
+
+function vektorSearch(filterModel)
+{
+
+    this.filters  = filterModel.get('filters');
+
+    this.resultDevices = null;
+
+    this.init = function(){
+        //copy device list for result purposes
+        VektorChooser.resultDevices = VektorChooser.devices;
+
+        //add filters to the filtered model
+        this.applyFilters();
+        this.setResultView();
+    }
+
+    //add filters to the filtered model
+    this.applyFilters = function() {
+        _.each(this.filters,function(v,k){
+
+            if(v.key == 'additionalProps') {
+                return false;
+            }
+
+            //filter
+            VektorChooser.resultDevices = VektorChooser.resultDevices.filterBy(v.key, v.value);
+
+            //make a new collection
+            VektorChooser.resultDevices = new VektorChooser.DeviceCollection(VektorChooser.resultDevices);
+
+        });
+
+        console.log('Device List',VektorChooser.resultDevices);
+
+        //pass final device collection to update view
+        VektorChooser.events.trigger('result.update',VektorChooser.resultDevices);
+
+    }
+
+    this.setResultView = function(){
+
+
+        var $area = jQuery('#result-area');
+
+        $area.html('<h1>Araçlar</h1>');
+
+
+
+        //TODO: should be in a view
+        //write results to page
+        VektorChooser.resultDevices.forEach(function(v,k){
+            //console.log(k, v.get('name'));
+            $area.append('<h2>'+v.get('name')+'</h2>');
+            if( v.get('additionalPackages').length ) {
+                $area.append('<h4>Uyumlu paketler: '+v.get('additionalPackages')+'</h4>');
+            }
+            $area.append('<p>Özellikler: '+v.get('props')+'</p>');
+
+
+
+        });
+
+        var enabledPackages = resultModel.get('enabledPackages');
+
+
+        if( enabledPackages.length ) {
+            $area.append('<h1>Kullanılabilir paketler:</h1>');
+
+            enabledPackages.forEach(function(v,k){
+
+                $area.append('<h2>Kullanılabilir paketler: '+v.get('name')+'</h2>');
+            });
+        }
+    }
+
+
+
+
+
 
 
 
@@ -230,7 +301,29 @@ var VektorChooser = VektorChooser || {};
                         return (_.indexOf(value, prop) >= 0);
                     }
 
-                    return page.get(filter) == value;
+                    return page.get('name') == value;
+
+
+            });
+        },
+
+        //if item is array, look through
+        filterHasProps: function (value) {
+
+            return this.models.filter(function (model) {
+
+
+                var props = model.get('props');
+
+
+                    if(_.isArray(value) ) {
+
+                        console.log('INTERSECT:',_.intersection(props,value).length);
+
+                        return (_.intersection(props,value).length);
+                    }
+
+                    return (_.indexOf(props,value) >= 0);
 
 
             });
@@ -258,7 +351,7 @@ var VektorChooser = VektorChooser || {};
         // Reference to this collection's model.
         model: VektorChooser.DeviceModel,
 
-        validFilters  : ['vehicleTypes','props','additionalPackages'],
+        //validFilters  : ['vehicleTypes','props','additionalPackages'],
 
         //if item is array, look through
         filterBy: function (filter, value) {
@@ -300,7 +393,9 @@ var VektorChooser = VektorChooser || {};
     VektorChooser.events.on('device.search', function(filter){
 
         //to the search
-        window.vSearch(filter);
+        var search = new vektorSearch(filter);
+
+        search.init();
 
     });
 
@@ -309,7 +404,9 @@ var VektorChooser = VektorChooser || {};
         //to the search
         resultModel.set('devices',devices);
 
-        //console.log('In Event:',resultModel.get('additionalPackages'));
+        resultModel.setResults();
+
+        console.log('In Event:');
 
     });
 
@@ -457,13 +554,12 @@ var VektorChooser = VektorChooser || {};
 
         initialize: function() {
 
-            this.setProps();
+            this.setProps(VektorChooser.defaultProps);
 
 
         },
 
-        setProps : function(){
-            var props = VektorChooser.defaultProps;
+        setProps : function(props){
             this.set( 'props', props.concat(this.get('props')));
         }
 
@@ -528,13 +624,13 @@ var VektorChooser = VektorChooser || {};
 
                     current.updateFilterItem(filter,true);
                 } else {
-                    current.updateFilterItem(filter,false);
 
+                    //view will use it as a prop anyways
+                    current.updateFilterItem(filter,false);
                 }
 
             });
 
-            console.log('filters now:',this.get('additionalProps'));
 
             this.updateChangeTime();
 
@@ -560,15 +656,7 @@ var VektorChooser = VektorChooser || {};
             }
 
             this.set(filter.key,M);
-        },
-
-
-        search : function(){
-            window.vSearch(this);
-
-
         }
-
 
 
 
@@ -603,13 +691,17 @@ var VektorChooser = VektorChooser || {};
 
             additionalPackages : [],
 
-            additionalProps : []
+            additionalProps : [],
+
+            enabledPackages : [],
+
+            filterModel: false
         },
 
 
         initialize: function() {
 
-            this.on('change:devices', this.setResults);
+            //this.on('change:devices', this.setResults);
             //this.on('change:additionalPackages', this.updatePackageProps);
         },
 
@@ -618,12 +710,14 @@ var VektorChooser = VektorChooser || {};
             this.set('props',[]);
             this.set('additionalPackages',[]);
             this.set('additionalProps',[]);
+            this.set('enabledPackages',[]);
         },
 
         setResults : function(){
 
+            //final number of devices filtered
             var devices = this.get('devices');
-            console.log(devices);
+            //console.log(devices);
             if( !devices ) {
                 return false;
             }
@@ -643,14 +737,13 @@ var VektorChooser = VektorChooser || {};
 
             });
 
-            console.log('RESULT Add. PACKS',this.get('additionalPackages'));
 
-
-            //fill additional props through additionalPackages
-            //var apacks = this.get('additionalPackages');
 
 
             this.updatePackageProps();
+
+            //find enabled additional packages
+            this.findAdditionalPackages();
 
             this.updateChangeTime();
 
@@ -660,6 +753,25 @@ var VektorChooser = VektorChooser || {};
         {
             var d = new Date();
             this.set('changeTime', d.getTime() );
+        },
+
+        findAdditionalPackages : function(){
+
+
+
+            //selected on the form
+            var selectedProps = window.filterModel.get('additionalProps');
+
+            var packages = this.get('packages');
+
+            var enabledPackages = packages.filterHasProps(selectedProps);
+            console.log('selected Props',selectedProps,packages);
+            console.log('enabledPackages',enabledPackages);
+
+            if( enabledPackages.length ) {
+                this.set('enabledPackages',enabledPackages);
+            }
+
         },
 
 
@@ -681,7 +793,6 @@ var VektorChooser = VektorChooser || {};
 
             this.set('packages',VektorChooser.resultAdditionalPackages);
 
-            console.log('RES PACKS in RES',VektorChooser.resultAdditionalPackages,VektorChooser.additionalPackages);
 
             var packages = this.get('packages');
 
@@ -918,12 +1029,6 @@ var VektorChooser = VektorChooser || {};
             props : ['Carrier','ThermoKing']
 
 
-
-
-
-
-
-
     });
 
 }());
@@ -1107,11 +1212,19 @@ var VektorChooser = VektorChooser || {};
                 var filterType = $item.data('filter');
                 var filterValue = $item.val();
 
+                //hack for additional filters
+                if( $item.data('additional') == 'yes' ) {
+                    filters.push({key:'additionalProps',value:filterValue});
+                }
+
                 var data = {
                     key: filterType,
                     value : filterValue
                 };
+
                 filters.push(data);
+
+
             });
 
 

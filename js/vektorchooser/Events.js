@@ -10,7 +10,9 @@ var VektorChooser = VektorChooser || {};
     VektorChooser.events.on('device.search', function(filter){
 
         //to the search
-        window.vSearch(filter);
+        var search = new vektorSearch(filter);
+
+        search.init();
 
     });
 
@@ -19,7 +21,9 @@ var VektorChooser = VektorChooser || {};
         //to the search
         resultModel.set('devices',devices);
 
-        //console.log('In Event:',resultModel.get('additionalPackages'));
+        resultModel.setResults();
+
+        console.log('In Event:');
 
     });
 

@@ -71,11 +71,19 @@ var VektorChooser = VektorChooser || {};
                 var filterType = $item.data('filter');
                 var filterValue = $item.val();
 
+                //hack for additional filters
+                if( $item.data('additional') == 'yes' ) {
+                    filters.push({key:'additionalProps',value:filterValue});
+                }
+
                 var data = {
                     key: filterType,
                     value : filterValue
                 };
+
                 filters.push(data);
+
+
             });
 
 

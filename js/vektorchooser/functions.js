@@ -21,6 +21,21 @@ function vektorInit()
 
     });
 
+    //add properties of devices to models props
+    VektorChooser.devices.forEach(function(device){
+        var packageList = device.get('additionalPackages');
+        if( packageList.length == 0 ) { return device;}
+
+        var packages = VektorChooser.additionalPackages.byNameList(packageList);
+
+        packages.forEach(function(pack,index,list){
+
+            device.setProps(pack.get('props'));
+
+        });
+        return device;
+    });
+
 }
 
 function vektorModelsInit()
@@ -30,3 +45,14 @@ function vektorModelsInit()
     resultModel = new VektorChooser.ResultModel();
 }
 
+//is it a props or additionalProp or not at all
+function vektorDetectPropertyType(item)
+{
+    if( _.indexOf(dataModel.get('props'),item) > -1 ) {
+        return 'props';
+    }
+    if( _.indexOf(dataModel.get('additionalProps'),item) > -1 ) {
+        return 'additionalProps';
+    }
+    return false;
+}

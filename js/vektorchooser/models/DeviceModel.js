@@ -25,13 +25,12 @@ var VektorChooser = VektorChooser || {};
 
         initialize: function() {
 
-            this.setProps();
+            this.setProps(VektorChooser.defaultProps);
 
 
         },
 
-        setProps : function(){
-            var props = VektorChooser.defaultProps;
+        setProps : function(props){
             this.set( 'props', props.concat(this.get('props')));
         }
 
